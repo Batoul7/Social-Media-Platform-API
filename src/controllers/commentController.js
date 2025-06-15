@@ -6,20 +6,19 @@ const mongoose = require('mongoose');
 
 class CommentController {
     createComment = async (req, res) => {
-        const { content, postId } = req.body;
-        const authorId = req.user._id; 
+            try {
+                const { content, postId } = req.body;
+            const authorId = req.user._id; 
 
-        if (!content || !postId) {
-            return errorResponse(res, 'Content and postId are required', {}, 400);
-        }
-        if (content.length < 1) { 
-            return errorResponse(res, 'Comment cannot be empty', {}, 400);
-        }
-        if (!mongoose.Types.ObjectId.isValid(postId)) {
-            return errorResponse(res, 'Invalid Post ID', {}, 400);
-        }
-
-        try {
+            if (!content || !postId) {
+                return errorResponse(res, 'Content and postId are required', {}, 400);
+            }
+            if (content.length < 1) { 
+                return errorResponse(res, 'Comment cannot be empty', {}, 400);
+            }
+            if (!mongoose.Types.ObjectId.isValid(postId)) {
+                return errorResponse(res, 'Invalid Post ID', {}, 400);
+            }
             const post = await Post.findById(postId);
             if (!post) {
                 return errorResponse(res, 'Post not found', {}, 404);
@@ -44,13 +43,13 @@ class CommentController {
     };
 
     getCommentsByPostId = async (req, res) => {
-        const { postId } = req.params;
-
-        if (!mongoose.Types.ObjectId.isValid(postId)) {
-            return errorResponse(res, 'Invalid Post ID', {}, 400);
-        }
-
         try {
+            const { postId } = req.params;
+
+            if (!mongoose.Types.ObjectId.isValid(postId)) {
+                return errorResponse(res, 'Invalid Post ID', {}, 400);
+            }
+
             const comments = await Comment.find({ postId })
                 .populate('authorId', 'username email id') 
                 .sort({ createdAt: 1 });
@@ -63,14 +62,13 @@ class CommentController {
     };
 
     deleteComment = async (req, res) => {
-    const { id } = req.params;
-    const userId = req.user._id;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-        return errorResponse(res, 'Invalid Comment ID', {}, 400);
-    }
-
     try {
+        const { id } = req.params;
+        const userId = req.user._id;
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return errorResponse(res, 'Invalid Comment ID', {}, 400);
+        }
         const comment = await Comment.findById(id);
 
         if (!comment) {

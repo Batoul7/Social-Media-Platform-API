@@ -5,14 +5,14 @@ const User = require('../models/User');
 const { isBlacklisted } = require('../helpers/tokenBlacklist'); 
 
 const auth = async (req, res, next) => {
-    const token = req.header('x-auth-token') || req.headers.authorization?.split(' ')[1];
-
-    if (!token) {
-        return errorResponse(res, 'No token, authorization denied', {}, 401);
-    }
 
     try {
-      
+        const token = req.headers.authorization?.split(' ')[1];
+
+        if (!token) {
+        return errorResponse(res, 'No token, authorization denied', {}, 401);
+        }
+
         const tokenIsBlacklisted = await isBlacklisted(token);
         if (tokenIsBlacklisted) {
             return errorResponse(res, 'Token revoked. Please login again.', {}, 401);

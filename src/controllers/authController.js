@@ -6,14 +6,13 @@ const { successResponse, errorResponse } = require('../helpers/responseHandler')
 const { addToBlacklist } = require('../helpers/tokenBlacklist');
 
 exports.signup = async (req, res) => {
-    const { username, email, password } = req.body;
-
-
-    if (!username || !email || !password) {
-        return errorResponse(res, 'Please enter all fields', {}, 400);
-    }
-
     try {
+        const { username, email, password } = req.body;
+
+
+        if (!username || !email || !password) {
+            return errorResponse(res, 'Please enter all fields', {}, 400);
+        }
         const userExists = await User.findOne({ $or: [{ email }, { username }] });
         if (userExists) {
             return errorResponse(res, 'User already exists', {}, 400);
@@ -43,14 +42,13 @@ exports.signup = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-    const { email, password } = req.body;
-
-    // validation
-    if (!email || !password) {
-        return errorResponse(res, 'Please enter all fields', {}, 400);
-    }
-
     try {
+        const { email, password } = req.body;
+
+        // validation
+        if (!email || !password) {
+            return errorResponse(res, 'Please enter all fields', {}, 400);
+        }
         const user = await User.findOne({ email });
         if (!user) {
             return errorResponse(res, 'Invalid Credentials', {}, 400);

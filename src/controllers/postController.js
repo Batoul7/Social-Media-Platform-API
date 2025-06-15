@@ -7,17 +7,16 @@ const mongoose = require('mongoose');
 class PostController {
 
     createPost = async (req, res) => {
-        const { title, content } = req.body;
-        const authorId = req.user._id; 
-
-        if (!title || !content) {
-            return errorResponse(res, 'Title and content are required', {}, 400);
-        }
-        if (title.length < 3) {
-            return errorResponse(res, 'Title must be at least 3 characters long', {}, 400);
-        }
-
         try {
+            const { title, content } = req.body;
+            const authorId = req.user._id; 
+
+            if (!title || !content) {
+                return errorResponse(res, 'Title and content are required', {}, 400);
+            }
+            if (title.length < 3) {
+                return errorResponse(res, 'Title must be at least 3 characters long', {}, 400);
+            }
             const newPost = new Post({
                 title,
                 content,
@@ -33,22 +32,21 @@ class PostController {
     };
 
     updatePost = async (req, res) => {
-        const { id } = req.params;
-        const { title, content } = req.body;
-        const userId = req.user._id; 
-
-
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return errorResponse(res, 'Invalid Post ID', {}, 400);
-        }
-        if (!title && !content) {
-            return errorResponse(res, 'No fields to update provided', {}, 400);
-        }
-        if (title && title.length < 3) {
-            return errorResponse(res, 'Title must be at least 3 characters long', {}, 400);
-        }
-
         try {
+            const { id } = req.params;
+            const { title, content } = req.body;
+            const userId = req.user._id; 
+
+
+            if (!mongoose.Types.ObjectId.isValid(id)) {
+                return errorResponse(res, 'Invalid Post ID', {}, 400);
+            }
+            if (!title && !content) {
+                return errorResponse(res, 'No fields to update provided', {}, 400);
+            }
+            if (title && title.length < 3) {
+                return errorResponse(res, 'Title must be at least 3 characters long', {}, 400);
+            }
             const post = await Post.findById(id);
             if (!post) {
                 return errorResponse(res, 'Post not found', {}, 404);
@@ -70,14 +68,15 @@ class PostController {
     };
 
     deletePost = async (req, res) => {
-        const { id } = req.params;
-        const userId = req.user._id; 
-
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return errorResponse(res, 'Invalid Post ID', {}, 400);
-        }
-
+        
         try {
+            const { id } = req.params;
+            const userId = req.user._id; 
+
+            if (!mongoose.Types.ObjectId.isValid(id)) {
+                return errorResponse(res, 'Invalid Post ID', {}, 400);
+            }
+
             const post = await Post.findById(id);
 
             if (!post) {
